@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Generador de CV (PDF)</title>
+    <link rel="stylesheet" href="./cv.css" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+      integrity="sha512-qZvrm1LkCwN0oKgo08Wb2WQjtv3M+2r9LZcw9pB5IWRcAQv2l3MrA4p0XGx8WvT7wVYcDYXhHqvDqkQm4iKf7A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+  </head>
+  <body>
+    <main class="container">
+      <header class="header">
+        <div>
+          <h1>Form</h1>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-secondary" id="fillExample" type="button">Ejemplo</button>
+          <button class="btn btn-primary" id="generatePdf" type="button">Generar PDF</button>
+        </div>
+      </header>
+
+      <form id="cvForm" class="card" autocomplete="on">
+        <section class="grid">
+          <div class="field">
+            <label for="fullName">Nombre completo</label>
+            <input id="fullName" name="fullName" placeholder="Ej. Ana Pérez" required />
+          </div>
+
+          <div class="field">
+            <label for="role">Puesto / Perfil</label>
+            <input id="role" name="role" placeholder="Ej. Desarrolladora Frontend" />
+          </div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="ana@email.com" />
+          </div>
+
+          <div class="field">
+            <label for="phone">Teléfono</label>
+            <input id="phone" name="phone" placeholder="+34 600 000 000" />
+          </div>
+
+          <div class="field">
+            <label for="location">Ubicación</label>
+            <input id="location" name="location" placeholder="Madrid, España" />
+          </div>
+
+          <div class="field">
+            <label for="links">Links (LinkedIn / GitHub / Portafolio)</label>
+            <input id="links" name="links" placeholder="https://..., https://..." />
+            <div class="hint">Separados por coma.</div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head">
+            <h2>Resumen</h2>
+          </div>
+          <div class="field">
+            <label for="summary">Sobre ti</label>
+            <textarea
+              id="summary"
+              name="summary"
+              rows="4"
+              placeholder="2–4 líneas sobre tu experiencia y tus fortalezas."
+            ></textarea>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head">
+            <h2>Habilidades</h2>
+          </div>
+          <div class="field">
+            <label for="skills">Skills</label>
+            <input id="skills" name="skills" placeholder="HTML, CSS, JavaScript, React..." />
+            <div class="hint">Separadas por coma.</div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head">
+            <h2>Educación</h2>
+            <button class="btn btn-secondary" type="button" id="addEducation">Añadir</button>
+          </div>
+          <div id="educationList" class="repeatable-list" aria-live="polite"></div>
+        </section>
+
+        <section class="section">
+          <div class="section-head">
+            <h2>Experiencia</h2>
+            <button class="btn btn-secondary" type="button" id="addExperience">Añadir</button>
+          </div>
+          <div id="experienceList" class="repeatable-list" aria-live="polite"></div>
+        </section>
+
+        <section class="section">
+          <div class="section-head">
+            <h2>Idiomas (opcional)</h2>
+          </div>
+          <div class="field">
+            <label for="languages">Idiomas</label>
+            <input id="languages" name="languages" placeholder="Español (nativo), Inglés (B2)..." />
+            <div class="hint">Separados por coma.</div>
+          </div>
+        </section>
+      </form>
+
+      <footer class="footer">
+        <span class="muted">
+          Nota: la generación de PDF se hace en tu navegador. Si no te descarga, revisa que tengas Internet para
+          cargar `jsPDF`.
+        </span>
+      </footer>
+    </main>
+
+    <template id="tplEducation">
+      <article class="repeatable-item">
+        <div class="repeatable-row">
+          <div class="field">
+            <label>Institución</label>
+            <input name="eduInstitution" placeholder="Universidad / Instituto" />
+          </div>
+          <div class="field">
+            <label>Título</label>
+            <input name="eduDegree" placeholder="Grado / Curso" />
+          </div>
+        </div>
+        <div class="repeatable-row">
+          <div class="field">
+            <label>Inicio</label>
+            <input name="eduStart" placeholder="2022" />
+          </div>
+          <div class="field">
+            <label>Fin</label>
+            <input name="eduEnd" placeholder="2026 / Actual" />
+          </div>
+        </div>
+        <div class="field">
+          <label>Descripción (opcional)</label>
+          <textarea name="eduDesc" rows="2" placeholder="Logros, notas, proyectos..."></textarea>
+        </div>
+        <div class="repeatable-actions">
+          <button class="btn btn-danger js-remove" type="button">Eliminar</button>
+        </div>
+      </article>
+    </template>
+
+    <template id="tplExperience">
+      <article class="repeatable-item">
+        <div class="repeatable-row">
+          <div class="field">
+            <label>Empresa</label>
+            <input name="expCompany" placeholder="Empresa" />
+          </div>
+          <div class="field">
+            <label>Puesto</label>
+            <input name="expTitle" placeholder="Puesto" />
+          </div>
+        </div>
+        <div class="repeatable-row">
+          <div class="field">
+            <label>Inicio</label>
+            <input name="expStart" placeholder="2024" />
+          </div>
+          <div class="field">
+            <label>Fin</label>
+            <input name="expEnd" placeholder="2025 / Actual" />
+          </div>
+        </div>
+        <div class="field">
+          <label>Descripción</label>
+          <textarea
+            name="expDesc"
+            rows="3"
+            placeholder="Responsabilidades, impacto, tecnologías..."
+          ></textarea>
+        </div>
+        <div class="repeatable-actions">
+          <button class="btn btn-danger js-remove" type="button">Eliminar</button>
+        </div>
+      </article>
+    </template>
+
+    <script src="./cv.js"></script>
+  </body>
+</html>
